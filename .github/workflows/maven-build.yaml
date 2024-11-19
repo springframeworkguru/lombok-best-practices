@@ -1,0 +1,36 @@
+name: Build Spring Boot with Maven
+
+on:
+    pull_request:
+        types: [opened, synchronize, reopened]
+        paths-ignore:
+            - '**.md'
+            - '.github/workflows/**/*'
+jobs:
+    build_and_verify:
+        name: Run Merge Checks
+        runs-on: ubuntu-latest
+        permissions:
+            checks: write
+            pull-requests: write
+        steps:
+            - name: Check out the repo
+              uses: actions/checkout@v4
+
+            - name: Setup Java 21
+              uses: actions/setup-java@v4
+              with:
+                  java-version: '21'
+                  distribution: 'temurin'
+                  architecture: x64
+                  cache: 'maven'
+
+            - name: Build with Maven
+              run: ./mvnw -B clean verify --no-transfer-progress
+
+            - name: Publish Test Results
+              uses: EnricoMi/publish-unit-test-result-action/linux@v2
+              if: always()
+              with:
+                  files: |
+                      ./target/surefire-reports/TEST-*.xml
