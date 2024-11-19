@@ -35,11 +35,9 @@ import java.util.concurrent.atomic.AtomicReference;
 public class BeerServiceJPA implements BeerService {
     private final BeerRepository beerRepository;
     private final BeerMapper beerMapper;
-    private final CacheManager cacheManager;
 
     private static final int DEFAULT_PAGE = 0;
     private static final int DEFAULT_PAGE_SIZE = 25;
-
 
     @Override
     public Page<BeerDTO> listBeers(String beerName, BeerStyle beerStyle, Boolean showInventory,
@@ -66,7 +64,6 @@ public class BeerServiceJPA implements BeerService {
         }
 
         return beerPage.map(beerMapper::beerToBeerDto);
-
     }
 
     public PageRequest buildPageRequest(Integer pageNumber, Integer pageSize) {
@@ -118,19 +115,14 @@ public class BeerServiceJPA implements BeerService {
 
     @Override
     public BeerDTO saveNewBeer(BeerDTO beer) {
-        if (cacheManager.getCache("beerListCache") != null) {
-            cacheManager.getCache("beerListCache").clear();
-        }
 
         val savedBeer = beerRepository.save(beerMapper.beerDtoToBeer(beer));
-
 
         return beerMapper.beerToBeerDto(savedBeer);
     }
 
     @Override
     public Optional<BeerDTO> updateBeerById(UUID beerId, BeerDTO beer) {
-        clearCache(beerId);
 
         AtomicReference<Optional<BeerDTO>> atomicReference = new AtomicReference<>();
 
@@ -155,7 +147,6 @@ public class BeerServiceJPA implements BeerService {
 
     @Override
     public Boolean deleteById(UUID beerId) {
-        clearCache(beerId);
 
         if (beerRepository.existsById(beerId)) {
 
@@ -165,19 +156,10 @@ public class BeerServiceJPA implements BeerService {
         return false;
     }
 
-    private void clearCache(UUID beerId) {
-        if (cacheManager.getCache("beerCache") != null ){
-            cacheManager.getCache("beerCache").evict(beerId);
-        }
 
-        if (cacheManager.getCache("beerListCache") != null) {
-            cacheManager.getCache("beerListCache").clear();
-        }
-    }
 
     @Override
     public Optional<BeerDTO> patchBeerById(UUID beerId, BeerDTO beer) {
-        clearCache(beerId);
 
         AtomicReference<Optional<BeerDTO>> atomicReference = new AtomicReference<>();
 
