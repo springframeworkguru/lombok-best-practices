@@ -13,17 +13,22 @@ jobs:
         permissions:
             checks: write
             pull-requests: write
+        strategy:
+          matrix:
+            java-version: [ 21 ]
+            distribution: [ openjdk, temurin ] # Try OpenJDK first, fallback to Temurin
+            architecture: [x64]
         steps:
             - name: Check out the repo
               uses: actions/checkout@v4
 
-            - name: Setup Java 21
+            - name: Setup Java ${{ matrix.java-version }} (${{ matrix.distribution }}, ${{ matrix.architecture }})
               uses: actions/setup-java@v4
               with:
-                  java-version: '21'
-                  distribution: 'temurin'
-                  architecture: x64
-                  cache: 'maven'
+                java-version: ${{ matrix.java-version }}
+                distribution: ${{ matrix.distribution }}
+                architecture: ${{ matrix.architecture }}
+                cache: 'maven'
 
             - name: Build with Maven
               run: ./mvnw -B clean verify --no-transfer-progress
