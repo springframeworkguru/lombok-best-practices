@@ -24,6 +24,6 @@ class LombokBestPracticesApplicationTests {
 
     @Test
     void test4() {
-        assertEquals(1, "2");
+        assertEquals(1, "3");
     }
 }
