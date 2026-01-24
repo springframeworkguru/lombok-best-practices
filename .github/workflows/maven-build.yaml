@@ -2,9 +2,9 @@ name: Build Spring Boot with Maven
 
 on:
   push:
-        branches: [ "main" ]
+        branches: [ "adding-buildvkn" ]
   pull_request:
-        branches: [ "main" ]
+        branches: [ "adding-buildvkn" ]
         types: [opened, synchronize, reopened]
         paths-ignore:
             - '**.md'
