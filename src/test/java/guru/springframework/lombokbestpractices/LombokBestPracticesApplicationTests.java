@@ -21,4 +21,9 @@ class LombokBestPracticesApplicationTests {
     void test3() {
         assertEquals(1, 1);
     }
+
+    @Test
+    void test4() {
+        assertEquals(1, 1);
+    }
 }
