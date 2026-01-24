@@ -1,7 +1,10 @@
 name: Build Spring Boot with Maven
 
 on:
-    pull_request:
+  push:
+        branches: [ "main" ]
+  pull_request:
+        branches: [ "main" ]
         types: [opened, synchronize, reopened]
         paths-ignore:
             - '**.md'
